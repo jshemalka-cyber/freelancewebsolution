@@ -1,0 +1,15 @@
+{
+  "businessName": "Business Name",
+  "headline": "Fast, Flawless Websites. Launch Your Business to Online Success Today.",
+  "valueProposition": "I focus on Mobile-First Design, High Performance, and SEO Optimized Web Development services. Get the highest value at the most competitive cost.",
+  "targetClient": "Small and Medium Enterprises (SMEs) and new Startups",
+  "primaryCTA": {
+    "label": "Book a Free 15-Minute Project Consultation",
+    "url": "#contact"
+  },
+  "contact": {
+    "email": "you@example.com",
+    "phone": "+971 50 000 0000",
+    "linkedin": "https://www.linkedin.com/in/your-profile/"
+  }
+}

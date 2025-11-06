@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About • Freelance Web Developer</title>
+  <meta name="description" content="Mobile-first, high-performance, SEO-optimized web development for SMEs and startups.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/style.css">
+</head>
+<body>
+  <header class="nav">
+    <nav class="container nav-inner" aria-label="Primary">
+      <a class="brand" href="./index.html" data-page="index.html">
+        <span class="dot"></span><span data-bind="businessName">Business Name</span>
+      </a>
+      <div class="row">
+        <a href="./index.html" data-page="index.html">Home</a>
+        <a href="./services.html" data-page="services.html">Services</a>
+        <a href="./portfolio.html" data-page="portfolio.html">Portfolio</a>
+        <a href="./about.html" data-page="about.html">About</a>
+        <a href="./contact.html" data-page="contact.html">Contact</a>
+        <a class="btn" href="#contact" data-bind="ctaHref"><span data-bind="ctaLabel">Book a Free 15-Minute Project Consultation</span></a>
+      </div>
+    </nav>
+  </header>
+  
+  <main>
+    <section class="section">
+      <div class="container grid grid-2">
+        <div>
+          <h1>About Me</h1>
+          <p class="lead">I build fast, flawless websites and apps for <span data-bind="targetClient">SMEs & Startups</span>. My mission is to deliver <strong>speed, clarity, and measurable results</strong> with every project.</p>
+          <div class="panel mt-3">
+            <h3>Personal Story</h3>
+            <p class="mt-2">I started as a problem-solver — helping small businesses fix their slow, clunky websites. Today, I design and build performance‑focused solutions that help clients launch and grow online, the right way.</p>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>Skill Stack</h3>
+          <div class="kpis mt-2">
+            <span class="kpi">HTML5</span>
+            <span class="kpi">CSS3</span>
+            <span class="kpi">JavaScript</span>
+            <span class="kpi">Git/GitHub</span>
+            <span class="kpi">Project Mgmt</span>
+            <span class="kpi">React</span>
+            <span class="kpi">Vue</span>
+          </div>
+          <div class="panel mt-3">
+            <h3>Core Mission</h3>
+            <p class="mt-2">To help founders and teams ship high‑quality sites quickly, without sacrificing performance or maintainability.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container row" style="justify-content:space-between">
+      <div>© <span data-bind="businessName">Business Name</span> — All rights reserved.</div>
+      <div class="row">
+        <a data-bind="contactEmail" href="mailto:you@example.com">you@example.com</a>
+        <span>·</span>
+        <a data-bind="contactPhone" href="tel:+971500000000">+971 50 000 0000</a>
+        <span>·</span>
+        <a data-bind="contactLinkedIn" href="#" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+  <script src="./assets/app.js"></script>
+</body>
+</html>

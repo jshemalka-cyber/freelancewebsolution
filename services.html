@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Services • Freelance Web Developer</title>
+  <meta name="description" content="Mobile-first, high-performance, SEO-optimized web development for SMEs and startups.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/style.css">
+</head>
+<body>
+  <header class="nav">
+    <nav class="container nav-inner" aria-label="Primary">
+      <a class="brand" href="./index.html" data-page="index.html">
+        <span class="dot"></span><span data-bind="businessName">Business Name</span>
+      </a>
+      <div class="row">
+        <a href="./index.html" data-page="index.html">Home</a>
+        <a href="./services.html" data-page="services.html">Services</a>
+        <a href="./portfolio.html" data-page="portfolio.html">Portfolio</a>
+        <a href="./about.html" data-page="about.html">About</a>
+        <a href="./contact.html" data-page="contact.html">Contact</a>
+        <a class="btn" href="#contact" data-bind="ctaHref"><span data-bind="ctaLabel">Book a Free 15-Minute Project Consultation</span></a>
+      </div>
+    </nav>
+  </header>
+  
+  <main>
+    <section class="section">
+      <div class="container">
+        <h1>Services</h1>
+        <p class="lead">Choose a package that fits your journey — all include a clear, 4‑step process: <strong>Discovery → Design → Development → Launch</strong>.</p>
+        <div class="grid grid-3 mt-3">
+          <div class="card">
+            <div class="thumb"><strong>Starter Website Package</strong></div>
+            <div class="body">
+              <p>Fixed-price, mobile-first website tailored to your brand. Perfect for SMEs and new startups.</p>
+              <ul class="mt-2" style="color:var(--muted)">
+                <li>Up to 5 pages</li>
+                <li>High-performance, SEO-ready</li>
+                <li>Deployed to GitHub Pages / Netlify</li>
+              </ul>
+              <a class="btn mt-3" href="./contact.html">Get Started</a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="thumb"><strong>Custom Web App Development</strong></div>
+            <div class="body">
+              <p>Quote-based SPAs, dashboards, and PWAs with modern frameworks (React/Vue).</p>
+              <ul class="mt-2" style="color:var(--muted)">
+                <li>API integrations & auth</li>
+                <li>Real-time features</li>
+                <li>Scalable cloud deployment</li>
+              </ul>
+              <a class="btn mt-3" href="./contact.html">Request a Quote</a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="thumb"><strong>E‑commerce Solutions</strong></div>
+            <div class="body">
+              <p>High-conversion storefronts and secure payments with Stripe or your preferred provider.</p>
+              <ul class="mt-2" style="color:var(--muted)">
+                <li>Product, cart, checkout</li>
+                <li>Headless CMS workflows</li>
+                <li>Analytics & A/B testing</li>
+              </ul>
+              <a class="btn mt-3" href="./contact.html">Discuss Your Store</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel mt-5">
+          <h2>Your 4‑Step Process</h2>
+          <div class="process mt-2">
+            <div class="step">
+              <div class="num">1</div>
+              <h4>Discovery</h4>
+              <p class="small">Understand goals, audience, and success metrics.</p>
+            </div>
+            <div class="step">
+              <div class="num">2</div>
+              <h4>Design</h4>
+              <p class="small">Wireframes and UI mockups focused on mobile-first UX.</p>
+            </div>
+            <div class="step">
+              <div class="num">3</div>
+              <h4>Development</h4>
+              <p class="small">Modern stack with version control and CI/CD.</p>
+            </div>
+            <div class="step">
+              <div class="num">4</div>
+              <h4>Launch</h4>
+              <p class="small">Deploy to GitHub Pages / Netlify / Vercel with analytics.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="cta-banner mt-5">
+          <div>
+            <h3>Have questions about scope or timeline?</h3>
+            <p class="small">Let's clarify in a free 15‑minute call.</p>
+          </div>
+          <a class="btn" data-bind="ctaHref"><span data-bind="ctaLabel">Book a Free 15-Minute Project Consultation</span></a>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container row" style="justify-content:space-between">
+      <div>© <span data-bind="businessName">Business Name</span> — All rights reserved.</div>
+      <div class="row">
+        <a data-bind="contactEmail" href="mailto:you@example.com">you@example.com</a>
+        <span>·</span>
+        <a data-bind="contactPhone" href="tel:+971500000000">+971 50 000 0000</a>
+        <span>·</span>
+        <a data-bind="contactLinkedIn" href="#" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+  <script src="./assets/app.js"></script>
+</body>
+</html>
