@@ -27,6 +27,16 @@
   <button class="btn secondary" id="toggle">Pause</button>
   <button class="btn secondary" id="set4k">Set Canvas to 4K</button>
   <button class="btn secondary" id="setFit">Fit to Window</button>
+  <script>
+  (function(){
+    const vid = document.getElementById('bg-video');
+    const canvas = document.getElementById('gl');
+    function hideCanvas(){ if(canvas) canvas.style.display = 'none'; }
+    vid.addEventListener('canplay', hideCanvas, { once: true });
+    vid.addEventListener('playing', hideCanvas, { once: true });
+  })();
+</script>
+
 </div>
 <script src="./neon-tunnel/tunnel.js"></script>
 </body></html>
