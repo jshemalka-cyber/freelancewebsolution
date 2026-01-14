@@ -1,32 +1,177 @@
 
 <!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Neon Future — Dark Mode Concept</title>
-<link rel="stylesheet" href="style.css">
+<title>QA Loop Video — 4s Seamless Test</title>
+<link rel="stylesheet" href="./style.css">
 </head><body>
-<canvas id="gl" aria-hidden="true"></canvas>
-<div class="page">
-  <div class="glass">
-    <h1>Fast. Flawless. Futuristic.</h1>
-    <p class="lead">Dark-mode design with neon blue/purple accents and a seamless-looping cosmic tunnel background.</p>
-    <div class="kpis"><div class="kpi">Mobile-first</div><div class="kpi">4K Loop-Ready</div><div class="kpi">WebGL</div><div class="kpi">Animated SVG</div></div>
-    <div class="icon-grid" id="icons">
-      <div class="icon-card"><img src="digital-marketing.svg" alt="Digital Marketing"/><h4>Digital Marketing</h4></div>
-      <div class="icon-card"><img src="web-development.svg" alt="Web Development"/><h4>Web Development</h4></div>
-      <div class="icon-card"><img src="seo.svg" alt="SEO Optimization"/><h4>SEO Optimization</h4></div>
-      <div class="icon-card"><img src="analytics.svg" alt="Analytics & Insights"/><h4>Analytics & Insights</h4></div>
-      <div class="icon-card"><img src="ecommerce.svg" alt="E-commerce"/><h4>E-commerce</h4></div>
-      <div class="icon-card"><img src="branding.svg" alt="Branding"/><h4>Branding</h4></div>
-      <div class="icon-card"><img src="ui-ux.svg" alt="UI/UX Design"/><h4>UI/UX Design</h4></div>
-      <div class="icon-card"><img src="maintenance.svg" alt="Maintenance"/><h4>Maintenance</h4></div>
-    </div>
-    <p class="small">Use the controls (bottom-left) to switch to exact 4K canvas for capture. The animation loops every 8s.</p>
-  </div>
+<h1>QA Loop Video — 0–4s (Seamless)</h1>
+<div class="wrap">
+  <canvas id="gl"></canvas>
+  <canvas id="overlay2d"></canvas>
 </div>
-<div class="controls" role="toolbar" aria-label="Animation controls">
-  <button class="btn secondary" id="toggle">Pause</button>
-  <button class="btn secondary" id="set4k">Set Canvas to 4K</button>
-  <button class="btn secondary" id="setFit">Fit to Window</button>
+<div class="ui">
+  <button class="btn" id="toggle">Pause</button>
+  <button class="btn" id="fit">Fit to Window</button>
+  <button class="btn" id="set4k">Set 4K (3840×2160)</button>
+  <button class="btn" id="record">Record 4s WebM</button>
 </div>
-<script src="tunnel.js"></script>
+<div class="note">Segments: 0–1s Sphere • 1–2s Text • 2–3s Grid+Ripple • 3–4s Reverse Sphere → Loop</div>
+<script>
+(function(){
+  const vsSrc = `
+attribute vec2 a_pos;
+varying vec2 v_uv;
+void main(){ v_uv = a_pos * 0.5 + 0.5; gl_Position = vec4(a_pos, 0.0, 1.0); }
+`;
+  const fsSrc = `
+precision highp float;
+varying vec2 v_uv;
+uniform vec2 u_res;
+uniform float u_t;
+float hash(float n){ return fract(sin(n)*753.5453123); }
+float noise(vec2 x){
+  vec2 i=floor(x); vec2 f=fract(x);
+  float a=hash(i.x+i.y*57.0);
+  float b=hash(i.x+1.0+i.y*57.0);
+  float c=hash(i.x+(i.y+1.0)*57.0);
+  float d=hash(i.x+1.0+(i.y+1.0)*57.0);
+  vec2 u=f*f*(3.0-2.0*f);
+  return mix(mix(a,b,u.x), mix(c,d,u.x), u.y);
+}
+vec3 hsv2rgb(vec3 c){
+  vec3 p = abs(fract(c.xxx + vec3(0.,0.6666667,0.3333333))*6. - 3.);
+  return c.z * mix(vec3(1.), clamp(p-1., 0., 1.), c.y);
+}
+vec3 sceneSphere(vec2 uv, float tt, float dir){
+  float t = fract(tt);
+  float angle = 3.14159 * 0.75 * (dir>0.0 ? t : (1.0-t));
+  float zoom  = mix(1.6, 1.05, (dir>0.0 ? t : (1.0-t)));
+  uv *= zoom;
+  vec3 ro = vec3(0.0,0.0,2.6);
+  vec3 rd = normalize(vec3(uv, -1.5));
+  float c = cos(angle), s = sin(angle);
+  mat3 R = mat3(c,0.,s, 0.,1.,0., -s,0.,c);
+  rd = R*rd;
+  float b = dot(ro, rd);
+  float c2 = dot(ro,ro) - 1.0;
+  float h = b*b - c2;
+  vec3 col = vec3(0.0);
+  if(h>0.0){
+    float t0 = -b - sqrt(h);
+    vec3 pos = ro + rd*t0;
+    vec3 n = normalize(pos);
+    float u = atan(n.z,n.x) / 6.2831853 + 0.5;
+    vec3 rgb = hsv2rgb(vec3(u, 0.95, 1.0));
+    float pat = 0.08*noise(n.xz*8.0 + n.y*4.0);
+    col = rgb + pat;
+    float rim = pow(1.0-max(0.0,dot(n,-rd)), 2.2);
+    col += vec3(0.2,0.3,0.9)*rim*0.4;
+  }else{
+    float stars = smoothstep(0.995,1.0, noise(uv*6.0));
+    col = mix(vec3(0.0), vec3(0.05,0.08,0.15), 0.6) + stars*0.25;
+  }
+  float r = length(uv);
+  col *= smoothstep(1.25, 0.25, r);
+  return col;
+}
+vec3 sceneGridRipple(vec2 uv, float t){
+  vec2 g = uv * vec2(u_res.x/u_res.y,1.0) * 50.0;
+  float r = length(uv);
+  float ripple = sin( (r*32.0 - t*6.2831853) ) * 0.02;
+  float a = atan(uv.y, uv.x);
+  vec2 duv = uv + ripple * vec2(cos(a), sin(a));
+  vec2 gg = duv * vec2(u_res.x/u_res.y,1.0) * 50.0;
+  float checker = step(0.5, fract(gg.x)) + step(0.5, fract(gg.y));
+  checker = mod(checker, 2.0);
+  vec3 col = mix(vec3(0.0), vec3(1.0), checker);
+  col = mix(col, vec3(0.5,0.6,1.0), 0.05);
+  col *= smoothstep(1.4, 0.2, length(uv));
+  return col;
+}
+void main(){
+  vec2 uv = (v_uv - 0.5) * 2.0;
+  uv.x *= u_res.x/u_res.y;
+  float t = mod(u_t, 4.0);
+  vec3 col;
+  if(t < 1.0){
+    float f = smoothstep(0.0, 0.12, t);
+    col = sceneSphere(uv, t, +1.0) * f;
+  }else if(t < 2.0){
+    float n = noise(uv*5.0)*0.01;
+    col = vec3(n);
+  }else if(t < 3.0){
+    float k = t - 2.0;
+    float f = smoothstep(0.0, 0.10, k);
+    col = sceneGridRipple(uv, k) * f;
+  }else{
+    float k = t - 3.0;
+    float f = smoothstep(0.0, 0.12, k);
+    col = sceneSphere(uv, k, -1.0) * f;
+  }
+  gl_FragColor = vec4(col, 1.0);
+}
+`;
+  const glCanvas = document.getElementById('gl');
+  const overlay = document.getElementById('overlay2d');
+  const gl = glCanvas.getContext('webgl', {antialias:true, preserveDrawingBuffer:true});
+  if(!gl){ alert('WebGL not supported'); return; }
+  function compile(t, s){ const sh = gl.createShader(t); gl.shaderSource(sh, s); gl.compileShader(sh); if(!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh)); return sh; }
+  function program(vs, fs){ const p = gl.createProgram(); gl.attachShader(p, vs); gl.attachShader(p, fs); gl.linkProgram(p); if(!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p)); return p; }
+  const prog = program(compile(gl.VERTEX_SHADER, vsSrc), compile(gl.FRAGMENT_SHADER, fsSrc));
+  gl.useProgram(prog);
+  const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(prog, 'a_pos'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const uRes = gl.getUniformLocation(prog, 'u_res');
+  const uT = gl.getUniformLocation(prog, 'u_t');
+  function setSize(w,h){ glCanvas.width=w; glCanvas.height=h; overlay.width=w; overlay.height=h; gl.viewport(0,0,w,h); gl.uniform2f(uRes,w,h); glCanvas.style.width='100%'; glCanvas.style.height='100%'; overlay.style.width='100%'; overlay.style.height='100%'; }
+  function fit(){ setSize(glCanvas.clientWidth*devicePixelRatio, glCanvas.clientHeight*devicePixelRatio); }
+  function to4k(){ setSize(3840,2160); }
+  window.addEventListener('resize', fit, {passive:true}); fit();
+  let playing = true; let start = performance.now();
+  function drawOverlay(seg){
+    const ctx = overlay.getContext('2d'); const W=overlay.width, H=overlay.height;
+    ctx.clearRect(0,0,W,H);
+    if(seg>=1.0 && seg<2.0){
+      ctx.save();
+      ctx.fillStyle='#ffffff'; ctx.textBaseline='middle';
+      const px = Math.max(12, Math.floor(H*0.006));
+      ctx.font = `italic ${px}px "Times New Roman", Georgia, serif`;
+      const text = 'The quick brown fox jumps over the lazy dog — 8pt serif detail test';
+      const k = seg-1.0;
+      const x = (0.1 + 0.8*k) * W;
+      ctx.fillText(text, x - ctx.measureText(text).width/2, H*0.5);
+      ctx.restore();
+    }
+  }
+  function frame(now){
+    if(playing){
+      const t=(now-start)/1000.0;
+      gl.uniform1f(uT, t%4.0);
+      gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
+      drawOverlay((t%4.0));
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  document.getElementById('toggle').onclick = ()=>{ playing=!playing; document.getElementById('toggle').textContent=playing?'Pause':'Play'; if(playing) start=performance.now()-((performance.now()-start)%4000); };
+  document.getElementById('fit').onclick = fit;
+  document.getElementById('set4k').onclick = to4k;
+  document.getElementById('record').onclick = async ()=>{
+    const captureCanvas = document.createElement('canvas');
+    captureCanvas.width = glCanvas.width; captureCanvas.height = glCanvas.height;
+    const cctx = captureCanvas.getContext('2d');
+    const FPS = 30; const stream = captureCanvas.captureStream(FPS);
+    const rec = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
+    const chunks = []; rec.ondataavailable = e=>{ if(e.data.size) chunks.push(e.data); };
+    rec.onstop = ()=>{ const blob = new Blob(chunks, {type:'video/webm'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='qa-loop-4s.webm'; a.click(); URL.revokeObjectURL(url); };
+    let frames = 4*FPS, i=0; rec.start();
+    function renderFrame(){
+      cctx.clearRect(0,0,captureCanvas.width,captureCanvas.height);
+      cctx.drawImage(glCanvas,0,0); cctx.drawImage(overlay,0,0);
+      i++; if(i<frames){ setTimeout(renderFrame, 1000/FPS); } else { rec.stop(); }
+    } renderFrame();
+  };
+})();
+</script>
 </body></html>
